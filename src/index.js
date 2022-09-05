@@ -1,4 +1,4 @@
-const SerialPort = require('serialport');
+const { SerialPort } = require('serialport');
 const aesjs = require('aes-js');
 const EventEmitter = require('events');
 const crypto = require('crypto');
@@ -43,7 +43,8 @@ module.exports = class SSP extends EventEmitter {
 
   open(port, param = {}) {
     return new Promise((resolve, reject) => {
-      this.port = new SerialPort(port, {
+      this.port = new SerialPort({
+        path: port,
         baudRate: param.baudRate || 9600,
         databits: param.databits || 8,
         stopbits: param.stopbits || 2,
