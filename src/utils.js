@@ -373,12 +373,12 @@ function parseData(data, currentCommand, protocolVersion, deviceUnitType) {
             info.name === 'NOTE_DISPENSED_AT_POWER-UP'
           ) {
             if (protocolVersion >= 6) {
-              let count = chunk[1];
+              let count = 1;
               info.value = [];
               for (let i = 0; i < count; i++) {
                 info.value[i] = {
-                  value: Buffer.from(chunk.slice((i * 7) + 2, (i * 7) + 6)).readInt32LE(),
-                  country_code: Buffer.from(chunk.slice((i * 7) + 6, (i * 7) + 9)).toString()
+                  value: Buffer.from(chunk.slice((i * 4) + 1, (i * 4) + 5)).readInt32LE(),
+                  //country_code: Buffer.from(chunk.slice((i * 7) + 6, (i * 7) + 9)).toString()
                 };
               }
               if (info.name === 'ERROR_DURING_PAYOUT') {
