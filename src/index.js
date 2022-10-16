@@ -23,6 +23,7 @@ module.exports = class SSP extends EventEmitter {
     this.id = param.id || 0;
     this.timeout = param.timeout || 3000;
     this.encryptAllCommand = param.encryptAllCommand || true;
+    this.throwOnFailure = param.throwOnFailure || false;
     this.keys = {
       fixedKey: param.fixedKey || '0123456701234567',
       generatorKey: null,
@@ -153,6 +154,10 @@ module.exports = class SSP extends EventEmitter {
       });
     })
       .then(res => {
+        if (res && !res.success && this.throwOnFailure) {
+          throw new Error(JSON.stringify(res));
+        }
+
         return res.status === 'TIMEOUT' ? this.getPromise(command, buffer) : res;
       });
   }
@@ -272,7 +277,7 @@ module.exports = class SSP extends EventEmitter {
       .then(res => {
         if (res.status === 'OK') {
           this.enabled = false;
-          this.poll(false)
+          this.poll(false);
         }
         return res;
       });
