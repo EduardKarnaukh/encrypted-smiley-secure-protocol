@@ -272,7 +272,7 @@ module.exports = class SSP extends EventEmitter {
       .then(res => {
         if (res.status === 'OK') {
           this.enabled = false;
-          this.poll(false)
+          this.poll(false);
         }
         return res;
       });
@@ -281,7 +281,6 @@ module.exports = class SSP extends EventEmitter {
   command(command, args) {
     if (this.enabled) {
       let result = null;
-
       return this.poll(false)
         .then(() => this.exec(command, argsToByte(command, args, this.protocol_version)))
         .then(res => {
@@ -297,6 +296,7 @@ module.exports = class SSP extends EventEmitter {
   poll(status = true) {
     if (status) {
       this.polling = true;
+      this.with_ack = false;
       return this.exec('POLL')
         .then(result => {
           if (result.info) {
@@ -325,5 +325,13 @@ module.exports = class SSP extends EventEmitter {
       });
     }
     return new Promise((resolve) => { resolve(); });
+  }
+
+  setDenominationRoute(note, currency, route = 'cashbox') {
+    return this.command('SET_DENOMINATION_ROUTE', {
+      route: route, // payout|cashbox
+      value: note * 100,
+      country_code: currency
+    });
   }
 };

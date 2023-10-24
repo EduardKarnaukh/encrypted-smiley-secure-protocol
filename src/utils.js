@@ -152,6 +152,8 @@ function argsToByte(command, args, protocolVersion) {
       return int64LE(args.fixedKey);
     } else if (command === 'COIN_MECH_OPTIONS') {
       return [args.ccTalk ? 1 : 0];
+    } else if (command === 'EVENT_ACK') {
+      return [args.route === 'payout' ? 1 : 0];
     }
 
 
